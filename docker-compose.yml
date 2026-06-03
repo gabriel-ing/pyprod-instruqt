@@ -7,5 +7,6 @@ services:
     ports:
       - 1974:1972
       - 52777:52773
+      - 5547:5547
     volumes:
       - ./src:/home/irisowner/dev 

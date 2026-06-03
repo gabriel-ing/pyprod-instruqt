@@ -1,1 +1,4 @@
-iris-main.log
+**/.venv/
+**/__pycache__/
+**/.pytest_cache/
+**/iris-main.log
