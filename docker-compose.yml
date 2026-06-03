@@ -9,4 +9,4 @@ services:
       - 52777:52773
       - 5547:5547
     volumes:
-      - ./src:/home/irisowner/dev 
+      - ./:/home/irisowner/dev 

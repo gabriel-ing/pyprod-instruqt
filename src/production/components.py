@@ -1,7 +1,4 @@
-from datetime import datetime, date, time
-from fileinput import filename
-import time
-import requests
+from datetime import datetime
 import os
 from intersystems_pyprod import (
     IRISParameter,
@@ -15,7 +12,7 @@ from intersystems_pyprod import (
     IRISLog,
     Status,
 )
-from io import StringIO
+
 import iris
 import csv
 
