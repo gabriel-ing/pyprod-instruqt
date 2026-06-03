@@ -4,4 +4,4 @@ src/pyprod/
 **/.pytest_cache/
 **/iris-main.log
 src/Data/IN/*.csv
-src/Data/OUT/*.csv
+src/Data/OUT/*.csv*
