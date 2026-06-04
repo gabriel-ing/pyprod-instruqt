@@ -16,6 +16,8 @@ from intersystems_pyprod import (
 import iris
 import csv
 
+from census_components import CensusRequest
+
 iris_package_name = "RedLights"# enter the value for portnumber, for instance 5547
 
 class RedLightMessage(JsonSerialize):
@@ -25,14 +27,20 @@ class RedLightMessage(JsonSerialize):
     record_time:str = Column()
     license_plate_number:str = Column()
     vehicle_type:str = Column()
-    exempt:bool = Column(default=0) # This field will be used to indicate whether the violation is exempt from ticketing (e.g. for emergency vehicles)
-    
+
     # Geographic information
     state:str = Column(default="")
     county:str = Column(default="")
     tract:str = Column(default="")
     block_group:str = Column(default="")
 
+    
+    # Logic Based Fields
+    exempt:bool = Column(default=0) # used to indicate whether the violation is exempt from ticketing (e.g. for emergency vehicles)
+    severity:str = Column(default="") # used to indicate the severity of the violation based on the population of the area where the violation occurred, which is obtained from the census operation
+
+
+    
 
 
 class CSVReaderAdapter(InboundAdapter):
@@ -131,13 +139,18 @@ class FromCSV(BusinessService):
                         record_date=row["RECORD_DATE"],
                         record_time=row["RECORD_TIME"],
                         license_plate_number=row["LICENSE"],
-                        vehicle_type=row["VEHICLE_TYPE"]
+                        vehicle_type=row["VEHICLE_TYPE"], 
+                        state=row["STATE"],
+                        county=row["COUNTY"],
+                        tract=row["TRACT"],
+                        block_group=row["BLOCK_GROUP"]
                     )
 
                     # Send to Business Process for filtering and routing
                     self.SendRequestAsync(self.target_config_name, red_light_message)
 
             return Status.OK()
+        
         except Exception as e:
             IRISLog.Error(f"Failed to process file: {input['filename']}, error: {str(e)}")
             return Status.ERROR(f"Failed to process file {input['filename']}: {str(e)}")
@@ -168,6 +181,7 @@ class RoutingProcess(BusinessProcess):
             return Status.OK()
         
         else: 
+
             # Create ticket operation request
             ticket_operation_request = RedLightMessage(
                 intersection=request.intersection,
@@ -176,6 +190,25 @@ class RoutingProcess(BusinessProcess):
                 license_plate_number=request.license_plate_number,
                 vehicle_type=request.vehicle_type
             )
+
+
+            # Check that the required geographic information is present before sending to census operation
+            IRISLog.Info(f"Checking geographic information for message: {request}")
+            IRISLog.Info(f"State: {request.state}, County: {request.county}, Tract: {request.tract}, Block Group: {request.block_group}")
+            IRISLog.Info(f"Is any geographic information missing? {not all([request.state, request.county, request.tract, request.block_group])}")
+            if all([request.state, request.county, request.tract, request.block_group]):
+                # Create census request
+                census_request = CensusRequest(
+                    state=request.state,
+                    county=request.county,
+                    tract=request.tract,
+                    block_group=request.block_group
+                )
+
+                status, response = self.SendRequestSync("RedLights.ToCensus", census_request)
+                if status == Status.OK() and response:
+                    ticket_operation_request.severity = self._determine_severity(response.population) 
+
 
             # Send ticket request Synchronously since we want to ensure the ticket is issued before archiving the violation
             status, response = self.SendRequestSync(self.ticket_target, ticket_operation_request)
@@ -191,6 +224,14 @@ class RoutingProcess(BusinessProcess):
     def OnResponse(self, request, response, call_request, call_response, completion_key):
         return Status.OK()
     
+    def _determine_severity(self, population):
+        if population > 1000:
+            return "High"
+        elif population > 500:
+            return "Medium"
+        else:
+            return "Low"
+
 class TicketOperation(BusinessOperation):
     MessageMap = {
         f"{iris_package_name}.RedLightMessage": "issue_ticket"

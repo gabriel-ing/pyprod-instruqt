@@ -27,5 +27,6 @@ class MyProduction(Production):
 
     operations = [
         OperationItem("RedLights.ArchiveOperation", "RedLights.ArchiveOperation"),
-        OperationItem("RedLights.TicketOperation", "RedLights.TicketOperation")
+        OperationItem("RedLights.TicketOperation", "RedLights.TicketOperation"),
+        OperationItem("RedLights.ToCensus", "RedLights.ToCensus")
     ]
