@@ -8,7 +8,7 @@ class MyProduction(Production):
     actor_pool_size = 2
 
     services = [
-        ServiceItem("FromCSV", "RedLights.FromCSV", 
+        ServiceItem("RedLights.FromCSV", "RedLights.FromCSV", 
                     host_settings={"target_config_name": "RedLights.RoutingProcess"},
                     adapter_settings=
                         {"FILE_DIR": "/home/irisowner/dev/RedLights/Data/IN/",
