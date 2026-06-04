@@ -156,9 +156,10 @@ class FromCSV(BusinessService):
             return Status.ERROR(f"Failed to process file {input['filename']}: {str(e)}")
 
 class RoutingProcess(BusinessProcess):
-    archive_target: str = IRISProperty(description="Name of the target configuration to send the message to",settings="Target Settings")
-    ticket_target: str = IRISProperty(description="Name of the target configuration to send the message to", settings="Target Settings")
-    
+    archive_target: str = IRISProperty(description="Name of the archiving component to send the message to",settings="Target Settings")
+    ticket_target: str = IRISProperty(description="Name of the ticket issuing component to send the message to", settings="Target Settings")
+    census_target: str = IRISProperty(description="Name of the Census querying component to send the message to", settings="Target Settings")
+
     def OnRequest(self, request):
         IRISLog.Info(f"Received message in Business Process: {request}")
         

@@ -11,8 +11,8 @@ class MyProduction(Production):
         ServiceItem("FromCSV", "RedLights.FromCSV", 
                     host_settings={"target_config_name": "RedLights.RoutingProcess"},
                     adapter_settings=
-                        {"FILE_DIR": "/home/irisowner/dev/src/Data/IN/",
-                         "ARCHIVE_DIR": "/home/irisowner/dev/src/Data/OUT/"}
+                        {"FILE_DIR": "/home/irisowner/dev/RedLights/Data/IN/",
+                         "ARCHIVE_DIR": "/home/irisowner/dev/RedLights/Data/OUT/"}
                     )
     ]
 
@@ -20,7 +20,9 @@ class MyProduction(Production):
         ProcessItem("RedLights.RoutingProcess", "RedLights.RoutingProcess", 
                     host_settings=
                         {"archive_target":"RedLights.ArchiveOperation",
-                         "ticket_target": "RedLights.TicketOperation"}
+                         "ticket_target": "RedLights.TicketOperation",
+                         "census_target": "RedLights.ToCensus"
+                         }
                     )
 
     ]

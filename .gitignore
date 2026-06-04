@@ -3,5 +3,5 @@ src/pyprod/
 **/__pycache__/
 **/.pytest_cache/
 **/iris-main.log
-src/Data/IN/*.csv
-src/Data/OUT/*.csv*
+RedLights/Data/IN/*.csv
+RedLights/Data/OUT/*.csv*
