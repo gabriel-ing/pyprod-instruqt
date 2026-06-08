@@ -16,7 +16,7 @@ from intersystems_pyprod import (
 import iris
 import csv
 
-iris_package_name = "RedLights"# enter the value for portnumber, for instance 5547
+iris_package_name = "RedLights"
 
 class RedLightMessage(JsonSerialize):
     # Basic record info 
@@ -25,8 +25,9 @@ class RedLightMessage(JsonSerialize):
     record_time:str = Column()
     license_plate_number:str = Column()
     vehicle_type:str = Column()
+
     exempt:bool = Column(default=0) # This field will be used to indicate whether the violation is exempt from ticketing (e.g. for emergency vehicles)
-    
+    severity:str = Column(default="unknown") # This field can be used to indicate the severity of the violation, which could be used for routing or ticketing decisions in a more complex implementation
     # Geographic information
     state:str = Column(default="")
     county:str = Column(default="")
@@ -198,8 +199,9 @@ class TicketOperation(BusinessOperation):
     def issue_ticket(self, request):
         
         IRISLog.Info(f"Creating ticket for red light violation: {request}")
-
-        IRISLog.Info(iris.RedLights.TicketManager.IssueTicket(request.license_plate_number))
+        if not hasattr(request, "severity"):
+            request.severity = "unknown"
+        IRISLog.Info(iris.RedLights.TicketManager.IssueTicket(request.license_plate_number, request.severity))
     
         return Status.OK(), iris.Ens.Response._New()
     

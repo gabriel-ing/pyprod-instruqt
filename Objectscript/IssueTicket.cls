@@ -1,9 +1,9 @@
 Class RedLights.TicketManager Extends %RegisteredObject
 {   
 
-    ClassMethod IssueTicket(license) As %String
+    ClassMethod IssueTicket(license, severity) As %String
     {
-        return "Issued ticket to License: "_license
+        return "Issued ticket to License: "_license_" with severity: "_severity
     }
 
 
