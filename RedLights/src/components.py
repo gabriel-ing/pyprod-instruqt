@@ -121,8 +121,7 @@ class FromCSV(BusinessService):
         """
         try: 
             IRISLog.Info(f"Processing file: {input['filename']} with {len(input['rows'])} rows")
-            
-            IRISLog.Info(f"input['rows']: {str(input['rows'])}")
+
             # Read the file dictionary taken from the adapter 
             for row in input["rows"]:
                     
@@ -148,8 +147,7 @@ class RoutingProcess(BusinessProcess):
     ticket_target: str = IRISProperty(description="Name of the target configuration to send the message to", settings="Target Settings")
     
     def OnRequest(self, request):
-        IRISLog.Info(f"Received message in Business Process: {request}")
-        
+
         # Prepare archive request message
         archive_request = RedLightMessage(
             intersection=request.intersection,
@@ -180,7 +178,7 @@ class RoutingProcess(BusinessProcess):
 
             # Send ticket request Synchronously since we want to ensure the ticket is issued before archiving the violation
             status, response = self.SendRequestSync(self.ticket_target, ticket_operation_request)
-            IRISLog.Info(f"Received response: {response}, status: {status}")
+
             if status != Status.OK():
                 IRISLog.Error(f"Failed to send message to Business Operation: {ticket_operation_request}")
         
@@ -198,9 +196,10 @@ class TicketOperation(BusinessOperation):
     }
     def issue_ticket(self, request):
         
-        IRISLog.Info(f"Creating ticket for red light violation: {request}")
+        
         if not hasattr(request, "severity"):
             request.severity = "unknown"
+
         IRISLog.Info(iris.RedLights.TicketManager.IssueTicket(request.license_plate_number, request.severity))
     
         return Status.OK(), iris.Ens.Response._New()
@@ -210,7 +209,7 @@ class ArchiveOperation(BusinessOperation):
         f"{iris_package_name}.RedLightMessage": "log_violation_to_archive"
     }
     def log_violation_to_archive(self, request):
-        IRISLog.Info(f"Received message in Archive Operation: {request}")
+
         try: 
             
             dates = self._get_dates(request)
@@ -229,7 +228,7 @@ class ArchiveOperation(BusinessOperation):
         except Exception as e:
             IRISLog.Error(f"Failed to archive message: {request}, error: {str(e)}")
             return Status.ERROR(f"Failed to archive violation: {str(e)}")
-        IRISLog.Info(f"Archiving message: {request}")
+
         return Status.OK()
     
     def _get_dates(self, request):
