@@ -206,7 +206,7 @@ class RoutingProcess(BusinessProcess):
                     block_group=request.block_group
                 )
 
-                status, response = self.SendRequestSync("RedLights.ToCensus", census_request)
+                status, response = self.SendRequestSync(self.census_target, census_request)
                 if status == Status.OK() and response:
                     ticket_operation_request.severity = self._determine_severity(response.population) 
 
