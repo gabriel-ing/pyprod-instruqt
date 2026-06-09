@@ -190,6 +190,14 @@ class RoutingProcess(BusinessProcess):
     def OnResponse(self, request, response, call_request, call_response, completion_key):
         return Status.OK()
     
+    def _determine_severity(self, population):
+        if population > 500:
+            return "High"
+        elif population > 250:
+            return "Medium"
+        else:
+            return "Low"
+
 class TicketOperation(BusinessOperation):
     MessageMap = {
         f"{iris_package_name}.RedLightMessage": "issue_ticket"
