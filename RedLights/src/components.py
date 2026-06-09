@@ -176,6 +176,10 @@ class RoutingProcess(BusinessProcess):
                 vehicle_type=request.vehicle_type
             )
 
+            #### Challenge 4: ####
+            ## Add Census Call IF block here #### 
+            ## if all([...) 
+
             # Send ticket request Synchronously since we want to ensure the ticket is issued before archiving the violation
             status, response = self.SendRequestSync(self.ticket_target, ticket_operation_request)
 
