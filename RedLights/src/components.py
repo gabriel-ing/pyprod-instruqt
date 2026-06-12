@@ -162,7 +162,7 @@ class RoutingProcess(BusinessProcess):
         if request.vehicle_type in ["police", "emergency", "ambulance"]:
             archive_request.exempt = 1
             # Send archive request asynchronously since we don't need to wait for it to complete
-            self.SendRequestAsync(self.archive_target, archive_request)
+            self.SendRequestAsync(self.archive_target, archive_request, response_required=False)
             IRISLog.Info(f"Message is from an emergency vehicle, skipping: {request}")
             return Status.OK()
         
@@ -176,7 +176,7 @@ class RoutingProcess(BusinessProcess):
                 vehicle_type=request.vehicle_type
             )
 
-            #### Challenge 4: ####
+            #### Challenge 3: ####
             ## Add Census Call IF block here #### 
             ## if all([...) 
 
@@ -188,11 +188,10 @@ class RoutingProcess(BusinessProcess):
         
             # Set exempt to False for non-emergency vehicles, but and archive violation
             archive_request.exempt = 0
-            self.SendRequestAsync(self.archive_target, archive_request)
+            self.SendRequestAsync(self.archive_target, archive_request,response_required=0)
         return Status.OK()
     
-    def OnResponse(self, request, response, call_request, call_response, completion_key):
-        return Status.OK()
+
     
     def _determine_severity(self, population):
         if population > 500:
