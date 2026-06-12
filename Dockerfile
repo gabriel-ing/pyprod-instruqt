@@ -19,9 +19,7 @@ WORKDIR /home/irisowner/dev
 
 
 RUN python3 -m pip install --break-system-packages intersystems_pyprod --target /usr/irissys/lib/python
-
-
-COPY Samples-Integration-RedLights/data/EndStateProduction.xml /tmp/EndStateProduction.xml
+RUN python3 -m pip install requests --break-system-packages --target /usr/irissys/lib/python
 
 
 RUN --mount=type=bind,src=.,dst=. \

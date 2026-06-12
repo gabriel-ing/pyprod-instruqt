@@ -1,9 +1,51 @@
-# Basic Template to get started with PyProd
+# PyProd Tutorial Application
 
-Dockerfile installs pyprod with pip, correctly sets the required environmental variables. 
+A starter template for building productions with [PyProd](https://github.com/intersystems/pyprod) on InterSystems IRIS. PyProd lets you define IRIS interoperability productions — services, processes, and operations — entirely in Python. The Docker setup handles all environment configuration out of the box.
 
-The ./src directory is mounted to /home/irisowner/dev meaning the files, including production.py is available here. 
+## Prerequisites
 
-The Merge.cpf file creates a new namespace ENSEMBLE which is the one used by pyprod (set by the environmental variable IRISNAMESPACE). 
+- Docker
 
+## Installation
 
+1. Clone this repository:
+   ```bash
+   git clone <repo-url>
+   cd pyprod-tutorial-application
+   ```
+
+2. Build and start the container:
+   ```bash
+   docker build -t pyprod-tutorial .
+   docker run -p 52773:52773 pyprod-tutorial
+   ```
+
+Your source files go in `./src` — this directory is mounted to `/home/irisowner/dev` inside the container so changes are reflected immediately without rebuilding.
+
+## Creating and Starting a Production
+
+Inside the container, generate the required IRIS classes from your Python source files, then register the components:
+
+```bash
+intersystems_pyprod components.py
+intersystems_pyprod census_components.py
+
+```
+Then register the production: 
+```bash
+intersystems_pyprod production.py
+```
+
+Then start the production with the helper CLI `controls.py`:
+
+```bash
+python3 controls.py start RedLights.MyProduction
+```
+
+## Configuration
+
+| Variable | Default | Description |
+|---|---|---|
+| `IRISNAMESPACE` | `ENSEMBLE` | IRIS namespace used by PyProd |
+| `IRISUSERNAME` | `SuperUser` | IRIS login username |
+| `IRISPASSWORD` | `SYS` | IRIS login password |
