@@ -146,7 +146,7 @@ class RoutingProcess(BusinessProcess):
     archive_target: str = IRISProperty(description="Name of the target configuration to send the message to",settings="Target Settings")
     ticket_target: str = IRISProperty(description="Name of the target configuration to send the message to", settings="Target Settings")
     
-    def on_response(self, request):
+    def on_request(self, request):
 
         # Prepare archive request message
         archive_request = RedLightMessage(
