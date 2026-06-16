@@ -10,17 +10,18 @@ A starter template for building productions with [PyProd](https://github.com/int
 
 1. Clone this repository:
    ```bash
-   git clone <repo-url>
-   cd pyprod-tutorial-application
+   git clone https://github.com/gabriel-ing/pyprod-instruqt.git
+   cd pyprod-instruqt
    ```
 
 2. Build and start the container:
    ```bash
-   docker build -t pyprod-tutorial .
-   docker run -p 52773:52773 pyprod-tutorial
+   docker-compose up -d --build
    ```
 
-Your source files go in `./src` — this directory is mounted to `/home/irisowner/dev` inside the container so changes are reflected immediately without rebuilding.
+The repo directory is mounted to `/home/irisowner/dev` inside the container so changes are reflected immediately without rebuilding.
+
+The management portal is at http://localhost:52777/csp/sys/%25CSP.Portal.Home.zen?$NAMESPACE=ENSEMBLE.
 
 ## Creating and Starting a Production
 
