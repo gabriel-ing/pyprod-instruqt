@@ -45,7 +45,7 @@ class CSVReaderAdapter(InboundAdapter):
         super().__init__(iris_host_object)
         self.processed_files = {}
 
-    def OnTask(self): 
+    def on_task(self): 
         '''
         Inbound CSV Reader adapter monitors a directory 
         '''
@@ -115,7 +115,7 @@ class FromCSV(BusinessService):
     # Define the target host for messages to be sent to 
     target_config_name: str = IRISProperty(description="Name of the target configuration to send the message to", settings="Target Settings")
 
-    def OnProcessInput(self, input):
+    def on_process_input(self, input):
         """
         This method receives the CSV file from the Inbound Adapter and sends messages for each row. 
         """
@@ -135,7 +135,7 @@ class FromCSV(BusinessService):
                     )
 
                     # Send to Business Process for filtering and routing
-                    self.SendRequestAsync(self.target_config_name, red_light_message)
+                    self.send_request_async(self.target_config_name, red_light_message)
 
             return Status.OK()
         except Exception as e:
@@ -146,7 +146,7 @@ class RoutingProcess(BusinessProcess):
     archive_target: str = IRISProperty(description="Name of the target configuration to send the message to",settings="Target Settings")
     ticket_target: str = IRISProperty(description="Name of the target configuration to send the message to", settings="Target Settings")
     
-    def OnRequest(self, request):
+    def on_response(self, request):
 
         # Prepare archive request message
         archive_request = RedLightMessage(
@@ -162,7 +162,8 @@ class RoutingProcess(BusinessProcess):
         if request.vehicle_type in ["police", "emergency", "ambulance"]:
             archive_request.exempt = 1
             # Send archive request asynchronously since we don't need to wait for it to complete
-            self.SendRequestAsync(self.archive_target, archive_request, response_required=False)
+            self.send_request_async(self.archive_target, archive_request, response_required=0)
+
             IRISLog.Info(f"Message is from an emergency vehicle, skipping: {request}")
             return Status.OK()
         
@@ -181,17 +182,18 @@ class RoutingProcess(BusinessProcess):
             ## if all([...) 
 
             # Send ticket request Synchronously since we want to ensure the ticket is issued before archiving the violation
-            status, response = self.SendRequestSync(self.ticket_target, ticket_operation_request)
+            status, response = self.send_request_sync(self.ticket_target, ticket_operation_request)
 
             if status != Status.OK():
                 IRISLog.Error(f"Failed to send message to Business Operation: {ticket_operation_request}")
         
             # Set exempt to False for non-emergency vehicles, but and archive violation
             archive_request.exempt = 0
-            self.SendRequestAsync(self.archive_target, archive_request,response_required=0)
+            self.send_request_async(self.archive_target, archive_request,response_required=0)
         return Status.OK()
     
-
+    def on_response(self, request, response, call_request, call_response, completion_key):
+        return Status.OK()
     
     def _determine_severity(self, population):
         if population > 500:
