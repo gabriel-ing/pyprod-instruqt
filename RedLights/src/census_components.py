@@ -23,10 +23,10 @@ class CensusResponse(JsonSerialize):
 class ToCensus(BusinessOperation):
 
     message_map = {
-        "RedLights.CensusRequest": "GetPopulation"
+        "RedLights.CensusRequest": "get_population"
     }
 
-    def GetPopulation(self, request):
+    def get_population(self, request):
         """
         Method to query the US Census API for population data based on the geographic information 
         provided in the request. The response from the API is used to determine the severity of 
