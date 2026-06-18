@@ -1,5 +1,7 @@
 from datetime import datetime
 import os
+import csv
+
 from intersystems_pyprod import (
     IRISParameter,
     IRISProperty,
@@ -12,9 +14,8 @@ from intersystems_pyprod import (
     IRISLog,
     Status,
 )
-
 import iris
-import csv
+
 
 iris_package_name = "RedLights"
 
@@ -108,6 +109,8 @@ class CSVReaderAdapter(InboundAdapter):
 
 
 class FromCSV(BusinessService):
+    ## Challenge 3 
+    ## TODO 3
 
     # Define adapter for service
     ADAPTER: str = IRISParameter(value="RedLights.CSVReaderAdapter", description="Full name of ADAPTER as would appear in the backend")
@@ -131,7 +134,9 @@ class FromCSV(BusinessService):
                         record_date=row["RECORD_DATE"],
                         record_time=row["RECORD_TIME"],
                         license_plate_number=row["LICENSE"],
-                        vehicle_type=row["VEHICLE_TYPE"]
+                        vehicle_type=row["VEHICLE_TYPE"] ## Add a comma here 
+
+                        ## Add Lines Here 
                     )
 
                     # Send to Business Process for filtering and routing
@@ -146,6 +151,10 @@ class RoutingProcess(BusinessProcess):
     archive_target: str = IRISProperty(description="Name of the target configuration to send the message to",settings="Target Settings")
     ticket_target: str = IRISProperty(description="Name of the target configuration to send the message to", settings="Target Settings")
     
+    ## Challenge 3
+    ## TODO 1 
+    ## Add census target here 
+
     def on_request(self, request):
 
         # Prepare archive request message
@@ -177,7 +186,8 @@ class RoutingProcess(BusinessProcess):
                 vehicle_type=request.vehicle_type
             )
 
-            #### Challenge 3: ####
+            ## Challenge 3
+            ## TODO #2
             ## Add Census Call IF block here #### 
             ## if all([...) 
 
@@ -212,7 +222,7 @@ class TicketOperation(BusinessOperation):
         
         if not hasattr(request, "severity"):
             request.severity = "unknown"
-            
+
         issue_ticket_status = iris.RedLights.TicketManager.IssueTicket(request.license_plate_number, request.severity)
         IRISLog.Info(issue_ticket_status)
     
