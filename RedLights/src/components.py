@@ -182,7 +182,7 @@ class RoutingProcess(BusinessProcess):
             ## if all([...) 
 
             # Send ticket request Synchronously since we want to ensure the ticket is issued before archiving the violation
-            status, response = self.send_request_sync(self.ticket_target, ticket_operation_request)
+            status = self.send_request_sync(self.ticket_target, ticket_operation_request)
 
             if status != Status.OK():
                 IRISLog.Error(f"Failed to send message to Business Operation: {ticket_operation_request}")
@@ -212,10 +212,11 @@ class TicketOperation(BusinessOperation):
         
         if not hasattr(request, "severity"):
             request.severity = "unknown"
-
-        IRISLog.Info(iris.RedLights.TicketManager.IssueTicket(request.license_plate_number, request.severity))
+            
+        issue_ticket_status = iris.RedLights.TicketManager.IssueTicket(request.license_plate_number, request.severity)
+        IRISLog.Info(issue_ticket_status)
     
-        return Status.OK(), iris.Ens.Response._New()
+        return Status.OK()
     
 class ArchiveOperation(BusinessOperation):
     MessageMap = {
