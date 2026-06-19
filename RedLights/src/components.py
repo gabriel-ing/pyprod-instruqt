@@ -212,7 +212,7 @@ class RoutingProcess(BusinessProcess):
 
 
             # Send ticket request Synchronously since we want to ensure the ticket is issued before archiving the violation
-            status,  = self.send_request_sync(self.ticket_target, ticket_operation_request)
+            status, response = self.send_request_sync(self.ticket_target, ticket_operation_request)
 
             if status != Status.OK():
                 IRISLog.Error(f"Failed to send message to Business Operation: {ticket_operation_request}")
@@ -255,21 +255,37 @@ class ArchiveOperation(BusinessOperation):
     def log_violation_to_archive(self, request):
         IRISLog.Info(f"Received message in Archive Operation: {request}")
         try: 
-            
             dates = self._get_dates(request)
 
-            violation = iris.RedLights.ViolationArchive._New()
-            violation.Intersection = request.intersection
-            violation.EventDate = dates["event_date"]
-            violation.EventTime = dates["event_time"]
-            violation.LicensePlateNumber = request.license_plate_number
-            violation.VehicleType = request.vehicle_type
-            violation.ProcessDate = dates["process_date"]
-            violation.ProcessTime = dates["process_time"]
-            status = violation._Save()
-            if status != 1:
-                raise Exception("Failed to save violation to archive")
+            query = """INSERT INTO iris.RedLights.ViolationArchive
+                        (
+                            Intersection,
+                            EventDate,
+                            EventTime,
+                            LicensePlateNumber,
+                            VehicleType,
+                            ProcessDate,
+                            ProcessTime
+                        )
+                        VALUES (?, ?, ?, ?, ?, ?, ?)"""
+
+            stmt = iris.sql.prepare(query)
+
+            status = stmt.execute(
+                request.intersection,
+                dates["event_date"],
+                dates["event_time"],
+                request.license_plate_number,
+                request.vehicle_type,
+                dates["process_date"],
+                dates["process_time"]
+                )
+        
+            if not status: 
+                IRISLog.Error(f"SQL Call failed with error {iris.check_status(status)}")
+
         except Exception as e:
+
             IRISLog.Error(f"Failed to archive message: {request}, error: {str(e)}")
             return Status.ERROR(f"Failed to archive violation: {str(e)}")
         IRISLog.Info(f"Archiving message: {request}")
