@@ -226,9 +226,9 @@ class RoutingProcess(BusinessProcess):
         return Status.OK()
     
     def _determine_severity(self, population):
-        if population > 1000:
+        if population > 250:
             return "High"
-        elif population > 500:
+        elif population > 100:
             return "Medium"
         else:
             return "Low"
@@ -281,9 +281,6 @@ class ArchiveOperation(BusinessOperation):
                 dates["process_time"]
                 )
         
-            if not status: 
-                IRISLog.Error(f"SQL Call failed with error {iris.check_status(status)}")
-
         except Exception as e:
 
             IRISLog.Error(f"Failed to archive message: {request}, error: {str(e)}")
