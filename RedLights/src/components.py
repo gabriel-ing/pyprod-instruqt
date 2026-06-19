@@ -251,9 +251,8 @@ class ArchiveOperation(BusinessOperation):
                         VALUES (?, ?, ?, ?, ?, ?, ?)"""
 
             stmt = iris.sql.prepare(query)
-            IRISLog.Info(query)
-            IRISLog.Info(stmt)
-            status = stmt.execute(
+
+            sql_status = stmt.execute(
                 request.intersection,
                 dates["event_date"],
                 dates["event_time"],
@@ -262,7 +261,8 @@ class ArchiveOperation(BusinessOperation):
                 dates["process_date"],
                 dates["process_time"]
                 )
-            IRISLog.Info(status)
+            
+
         except Exception as e:
             IRISLog.Error(f"Failed to archive message: {request}, error: {str(e)}")
             return Status.ERROR(f"Failed to archive violation: {str(e)}")
