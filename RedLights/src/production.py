@@ -8,7 +8,7 @@ class MyProduction(Production):
     actor_pool_size = 2
 
     services = [
-        ServiceItem("RedLights.FromCSV", "RedLights.FromCSV", 
+        ServiceItem("FromCSV", "RedLights.FromCSV", 
                     host_settings={"target_config_name": "RedLights.RoutingProcess"},
                     adapter_settings=
                         {"FILE_DIR": "/home/irisowner/dev/RedLights/Data/IN/",
@@ -17,15 +17,15 @@ class MyProduction(Production):
     ]
 
     processes = [
-        ProcessItem("RedLights.RoutingProcess", "RedLights.RoutingProcess", 
+        ProcessItem("RoutingProcess", "RedLights.RoutingProcess", 
                     host_settings=
-                        {"archive_target":"RedLights.ArchiveOperation",
-                         "ticket_target": "RedLights.TicketOperation"}
+                        {"archive_target":"ArchiveOperation",
+                         "ticket_target": "TicketOperation"}
                     )
 
     ]
 
     operations = [
-        OperationItem("RedLights.ArchiveOperation", "RedLights.ArchiveOperation"),
-        OperationItem("RedLights.TicketOperation", "RedLights.TicketOperation")
+        OperationItem("ArchiveOperation", "RedLights.ArchiveOperation"),
+        OperationItem("TicketOperation", "RedLights.TicketOperation")
     ]
