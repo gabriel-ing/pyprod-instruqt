@@ -9,7 +9,7 @@ class MyProduction(Production):
 
     services = [
         ServiceItem("FromCSV", "RedLights.FromCSV", 
-                    host_settings={"target_config_name": "RedLights.RoutingProcess"},
+                    host_settings={"target_config_name": "RoutingProcess"},
                     adapter_settings=
                         {"FILE_DIR": "/home/irisowner/dev/RedLights/Data/IN/",
                          "ARCHIVE_DIR": "/home/irisowner/dev/RedLights/Data/OUT/"}
