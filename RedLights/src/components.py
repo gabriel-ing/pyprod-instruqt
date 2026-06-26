@@ -256,6 +256,10 @@ class ArchiveOperation(BusinessOperation):
         IRISLog.Info(f"Received message in Archive Operation: {request}")
         try: 
             dates = self._get_dates(request)
+            
+            #
+            # RedLights.ViolationArchive is a table defined in IRIS
+            #
 
             query = """INSERT INTO iris.RedLights.ViolationArchive
                         (
