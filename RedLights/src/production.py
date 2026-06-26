@@ -21,7 +21,7 @@ class MyProduction(Production):
                     host_settings=
                         {"archive_target":"ArchiveOperation",
                          "ticket_target": "TicketOperation",
-                         "census_target": "ToCensus"
+                         "census_target": "CensusOperation"
                          }
                     )
 
@@ -30,5 +30,5 @@ class MyProduction(Production):
     operations = [
         OperationItem("ArchiveOperation", "RedLights.ArchiveOperation"),
         OperationItem("TicketOperation", "RedLights.TicketOperation"),
-        OperationItem("ToCensus", "RedLights.ToCensus")
+        OperationItem("CensusOperation", "RedLights.CensusOperation")
     ]

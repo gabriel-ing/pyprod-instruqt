@@ -20,7 +20,7 @@ class CensusRequest(JsonSerialize):
 class CensusResponse(JsonSerialize):
     population:int = Column()
 
-class ToCensus(BusinessOperation):
+class CensusOperation(BusinessOperation):
 
     message_map = {
         "RedLights.CensusRequest": "get_population"
