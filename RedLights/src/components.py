@@ -237,8 +237,10 @@ class ArchiveOperation(BusinessOperation):
 
         try: 
             dates = self._get_dates(request)
-
-            query = """INSERT INTO iris.RedLights.ViolationArchive
+            #
+            # RedLights.ViolationArchive is a table defined in IRIS
+            #
+            query = """INSERT INTO RedLights.ViolationArchive
                         (
                             Intersection,
                             EventDate,
