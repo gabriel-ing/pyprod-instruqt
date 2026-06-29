@@ -20,12 +20,15 @@ class MyProduction(Production):
         ProcessItem("RoutingProcess", "RedLights.RoutingProcess", 
                     host_settings=
                         {"archive_target":"ArchiveOperation",
-                         "ticket_target": "TicketOperation"}
+                         "ticket_target": "TicketOperation" # C4 add comma
+                         # C4 Add Census Target Setting
+                         }
                     )
 
     ]
 
     operations = [
         OperationItem("ArchiveOperation", "RedLights.ArchiveOperation"),
-        OperationItem("TicketOperation", "RedLights.TicketOperation")
+        OperationItem("TicketOperation", "RedLights.TicketOperation") # C4 Add Comma Here 
+        # C4: Add Operation Item Here
     ]

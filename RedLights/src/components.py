@@ -148,12 +148,13 @@ class FromCSV(BusinessService):
             return Status.ERROR(f"Failed to process file {input['filename']}: {str(e)}")
 
 class RoutingProcess(BusinessProcess):
-    archive_target: str = IRISProperty(description="Name of the target configuration to send the message to",settings="Target Settings")
-    ticket_target: str = IRISProperty(description="Name of the target configuration to send the message to", settings="Target Settings")
-    
     ## Challenge 3
     ## TODO 1 
-    ## Add census target here 
+
+    archive_target: str = IRISProperty(description="Name of the target configuration to send the message to",settings="Target Settings")
+    ticket_target: str = IRISProperty(description="Name of the target configuration to send the message to", settings="Target Settings")
+    ## Add census target here     
+
 
     def on_request(self, request):
 
