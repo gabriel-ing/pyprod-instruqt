@@ -12,7 +12,7 @@ class MyProduction(Production):
                     host_settings={"target_config_name": "RedLights.RoutingProcess"},
                     adapter_settings=
                         {"FILE_DIR": "/home/irisowner/dev/RedLights/Data/IN/",
-                         "ARCHIVE_DIR": "/home/irisowner/dev/RedLights/Data/OUT/"}
+                         "archive_dir": "/home/irisowner/dev/RedLights/Data/OUT/"}
                     )
     ]
 

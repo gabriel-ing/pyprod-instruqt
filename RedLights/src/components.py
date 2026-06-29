@@ -45,13 +45,10 @@ class RedLightMessage(JsonSerialize):
 
 class CSVReaderAdapter(InboundAdapter):
         
-    FILE_DIR: str = IRISProperty(description="Directory to monitor for new CSV files", settings="Adapter Settings")
-    ARCHIVE_DIR: str = IRISProperty(description="Directory to move processed CSV files to", settings="Adapter Settings")
-
-    def __init__(self, iris_host_object):
-        super().__init__(iris_host_object)
-        self.processed_files = {}
-
+    file_dir: str = IRISProperty(description="Directory to monitor for new CSV files", settings="Adapter Settings")
+    archive_dir: str = IRISProperty(description="Directory to move processed CSV files to", settings="Adapter Settings")
+    processed_files: dict = IRISProperty(description="A dictionary containing the processed files and their outcomes", settings="-", default={})
+    
     def on_task(self): 
         '''
         Inbound CSV Reader adapter monitors a directory 
@@ -79,7 +76,7 @@ class CSVReaderAdapter(InboundAdapter):
                         continue
 
             
-            file_path = os.path.join(self.FILE_DIR, filename)
+            file_path = os.path.join(self.file_dir, filename)
             IRISLog.Info(f"Found new file to process: {file_path}")
             try: 
                 # Read CSV file 
@@ -96,7 +93,7 @@ class CSVReaderAdapter(InboundAdapter):
                 filename = filename+"."+datetime.now().strftime("%Y%m%d%H%M%S")
 
                 # Move processed file to archive directory
-                os.rename(file_path, os.path.join(self.ARCHIVE_DIR, filename))
+                os.rename(file_path, os.path.join(self.archive_dir, filename))
 
                 IRISLog.Info(f"Finished processing file: {file_path}, moved to archive.")
 
@@ -109,8 +106,8 @@ class CSVReaderAdapter(InboundAdapter):
                 return Status.ERROR(f"Failed to process file {filename}: {str(e)}")
 
     def _list_csvs(self):
-        """Helper method to list CSV files in the FILE_DIR directory"""
-        csvs =  [f for f in os.listdir(self.FILE_DIR) if f.endswith(".csv")]
+        """Helper method to list CSV files in the file_dir directory"""
+        csvs =  [f for f in os.listdir(self.file_dir) if f.endswith(".csv")]
         return csvs
 
 
